@@ -8,7 +8,7 @@ chmod +x docker-debify
 docker run --rm \
   -v "$(pwd)":"$(pwd)" \
   --workdir "$(pwd)" \
-  cyberark/ubuntu-ruby-builder:latest \
+  registry.tld/cyberark/ubuntu-ruby-builder:22.04 \
   sh -c "bundle lock --update=conjur-api"
 
 # Create possum deb
@@ -16,8 +16,8 @@ docker run --rm \
   --dockerfile=Dockerfile.fpm \
   --output=deb \
   --version "$(<VERSION)" \
-  --image="cyberark/ubuntu-ruby-builder" \
-  --image-tag="latest" \
+  --image="registry.tld/cyberark/ubuntu-ruby-builder" \
+  --image-tag="22.04" \
   possum \
   -- \
   --depends tzdata
@@ -29,8 +29,8 @@ docker run --rm \
   --dockerfile=Dockerfile.fpm \
   --output=rpm \
   --version "$(<VERSION)" \
-  --image="cyberark/ubuntu-ruby-builder" \
-  --image-tag="latest" \
+  --image="registry.tld/cyberark/ubuntu-ruby-builder" \
+  --image-tag="22.04" \
   possum \
   -- \
   --depends tzdata \

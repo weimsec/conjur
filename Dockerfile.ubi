@@ -1,5 +1,5 @@
 # Ruby builder
-FROM cyberark/ubi-ruby-builder:latest as builder
+FROM registry.tld/cyberark/ubi-ruby-builder:ubi9 as builder
 
 ENV CONJUR_HOME=/opt/conjur-server
 
@@ -7,13 +7,6 @@ WORKDIR ${CONJUR_HOME}
 
 COPY Gemfile Gemfile.lock ./
 COPY ./gems/ ./gems/
-
-# Install package dependencies for Conjur
-RUN INSTALL_PKGS="openldap-clients \
-                  tzdata" && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum -y clean all --enablerepo='*'
 
 RUN bundle config set --local without 'test development' && \
     bundle config set --local deployment true && \
@@ -27,7 +20,7 @@ RUN bundle config set --local without 'test development' && \
     find / -name openid_connect -type d -exec find {} -name '*.pem' -type f -delete \;
 
 # Conjur Base Image (UBI)
-FROM cyberark/ubi-ruby-fips:latest
+FROM registry.tld/cyberark/ubi-ruby-fips:ubi9
 ARG VERSION
 
 LABEL name="conjur-ubi" \

@@ -1,4 +1,4 @@
-FROM cyberark/ubuntu-ruby-builder:latest as builder
+FROM registry.tld/cyberark/ubuntu-ruby-builder:22.04 as builder
 
 ENV CONJUR_HOME=/opt/conjur-server
 
@@ -17,7 +17,7 @@ RUN bundle config set --local without 'test development' && \
     find / -name 'httpclient-*' -type d -exec find {} -name '*.key' -type f -delete \; && \
     find / -name httpclient -type d -exec find {} -name '*.pem' -type f -delete \;
 
-FROM cyberark/ubuntu-ruby-fips:latest
+FROM registry.tld/cyberark/ubuntu-ruby-fips:22.04
 
 ENV PORT=80 \
     LOG_DIR=${CONJUR_HOME}/log \
@@ -29,17 +29,6 @@ ENV PORT=80 \
 ENV PATH="${PATH}:${CONJUR_HOME}/bin"
 
 WORKDIR ${CONJUR_HOME}
-
-RUN apt-get update -y && \
-    apt-get -y dist-upgrade && \
-    apt-get install -y libz-dev
-
-RUN apt-get install -y build-essential \
-                       curl \
-                       git \
-                       ldap-utils \
-                       tzdata \
-    && rm -rf /var/lib/apt/lists/*
 
 # Ensure few required GID0-owned folders to run as a random UID (OpenShift requirement)
 RUN mkdir -p $TMP_DIR \

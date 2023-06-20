@@ -90,4 +90,3 @@ on_worker_boot do
     puts "- #{k} from #{v}"
   end
 end
-
